@@ -1,0 +1,7 @@
+streamlit==1.51.0
+pandas==2.3.3
+scikit-learn==1.7.2
+plotly==6.5.0
+joblib==1.5.2
+phik==0.12.5
+pathlib==1.0.1
