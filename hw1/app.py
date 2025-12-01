@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import pickle
-from sklearn.linear_model import Ridge
-from sklearn.pipeline import Pipeline
 from pathlib import Path
 import phik
 
@@ -111,12 +109,14 @@ st.subheader('✨Модель')
 st.write('#### Веса модели по убыванию')
 prep_part = model.named_steps['prep']
 col_names_after_prep = model.named_steps['prep'].get_feature_names_out()
-weights = model.named_steps['ridge_model'].coef_
+weights, intercept = model.named_steps['ridge_model'].coef_, model.named_steps['ridge_model'].intercept_
 df_weights = pd.Series(dict(zip(col_names_after_prep, weights)))\
-    .sort_values(key=lambda x: abs(x), ascending=False)\
     .reset_index()\
     .rename({'index': 'feature',
              0: 'weight'}, axis=1)
+
+df_weights.loc[len(df_weights)] = ['intercept', intercept]
+df_weights = df_weights.sort_values(by='weight', key=lambda x: abs(x), ascending=False, ignore_index=True)
 
 def color_w(val):
     if val > 0:
